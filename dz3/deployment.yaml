@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dz-deployment
+  labels:
+    app: dz
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: dz
+  template:
+    metadata:
+      labels:
+        app: dz
+    spec:
+      containers:
+      - name: dz
+        image: nozv/otus-dz2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 3
+        resources:
+          requests: 
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 200m
+            memory: 512Mi
+      restartPolicy: Always
