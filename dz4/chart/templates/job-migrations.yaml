@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ include "dz4-chart.fullname" . }}-migrations"
+  annotations:
+    "helm.sh/hook": pre-install, pre-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  backoffLimit: 2
+  activeDeadlineSeconds: 60
+  template:
+    spec:
+      containers:
+      - name: dz4-migrations
+        image: "nozv/otus-dz4:{{ .Values.image.tag | default "latest" }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: 
+        - "/bin/sh"
+        args:
+        - "-c"
+        - "poetry run alembic upgrade head"
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "dz4-chart.fullname" . }}-config
+              key: db_host
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "dz4-chart.fullname" . }}-config
+              key: db_port
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "dz4-chart.fullname" . }}-config
+              key: db_name
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "dz4-chart.fullname" . }}-config
+              key: db_username
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.app.config.database.passwordFrom }}
+              key: db_password
+      restartPolicy: Never
