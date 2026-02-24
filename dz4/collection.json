@@ -1,0 +1,136 @@
+{
+    "info": {
+        "name": "Collection",
+        "schema": "http://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+        "description": "OTUS Microservice Architecture dz4"
+    },
+    "item": [
+        {
+            "name": "Create sample user with POST request",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('expect response be 200', function () {",
+                            "   pm.response.to.be.ok",
+                            "});",
+                            "const responseData = pm.response.json();",
+                            "const userId = responseData.id;",
+                            "pm.globals.set(\"user_id\", userId);",
+                            "console.log(responseData)"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "url": "http://arch.homework/api/v1/user/",
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"username\": \"sampleuser\",\"firstname\": \"user\",\"lastname\": \"sample\",\"email\": \"user@example.com\",\"phone\": \"+123123123\"}"
+                }
+            }
+        },
+        {
+            "name": "GET sample user info",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('expect response be 200', function () {",
+                            "   pm.response.to.be.ok",
+                            "});",
+                            "console.log(pm.response.json());"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "url": "http://arch.homework/api/v1/user/{{user_id}}/",
+                "method": "GET"
+            }
+        },
+        {
+            "name": "Update sample user",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('expect response be 200', function () {",
+                            "   pm.response.to.be.ok",
+                            "});",
+                            "console.log(pm.response.json());"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "url": "http://arch.homework/api/v1/user/{{user_id}}/",
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"username\": \"sampleuser\",\"firstname\": \"user\",\"lastname\": \"sample1\",\"email\": \"user@sample.com\",\"phone\": \"+000000\"}"
+                }
+            }
+        },
+        {
+            "name": "DELETE sample usero",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('expect response be 200', function () {",
+                            "   pm.response.to.be.ok",
+                            "});"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "url": "http://arch.homework/api/v1/user/{{user_id}}/",
+                "method": "DELETE"
+            }
+        },
+        {
+            "name": "GET all users",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "pm.test('expect response be 200', function () {",
+                            "   pm.response.to.be.ok",
+                            "});",
+                            "console.log(pm.response.json());"
+                        ]
+                    }
+                }
+            ],
+            "request": {
+                "url": "http://arch.homework/api/v1/users/",
+                "method": "GET"
+            }
+        }
+    ]
+}

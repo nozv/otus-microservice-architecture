@@ -1,0 +1,28 @@
+global:
+  postgresql:
+    auth:
+      username: dz4
+      database: dz4
+      existingSecret: otus-dz4
+      secretKeys:
+        userPasswordKey: db_password
+
+image:
+  registry: docker.io
+  repository: postgres
+  tag: 18
+
+primary:
+  containerSecurityContext:
+    enabled: true
+    runAsNonRoot: false
+    readOnlyRootFilesystem: false
+    runAsUser: 999
+    runAsGroup: 999
+
+volumePermissions:
+  # image:
+  #   registry: docker.io/library
+  #   repository: debian
+  #   tag: 12-slim
+  enabled: true

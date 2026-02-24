@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dz4-chart.fullname" . }}
+  labels:
+    {{- include "dz4-chart.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "dz4-chart.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "dz4-chart.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: dz4
+        image: "nozv/otus-dz4:{{ .Values.image.tag | default "latest" }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "dz4-chart.fullname" . }}-config
+              key: db_host
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "dz4-chart.fullname" . }}-config
+              key: db_port
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "dz4-chart.fullname" . }}-config
+              key: db_name
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: {{ include "dz4-chart.fullname" . }}-config
+              key: db_username
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.app.config.database.passwordFrom }}
+              key: db_password
+        {{- range $key, $value := .Values.extraEnv }}
+        - name: {{- $key }}
+          value: {{- $value | quote }}
+        {{- end }}
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+        {{- with .Values.livenessProbe }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}

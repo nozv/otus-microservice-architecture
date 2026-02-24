@@ -1,0 +1,24 @@
+image:
+  repository: nozv/otus-dz4
+  tag: latest
+
+app:
+  config:
+    database:
+      host: postgresql.dz4.svc.cluster.local
+      port: 5432
+      name: dz4
+      user: dz4
+      passwordFrom: otus-dz4
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations: 
+    #kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  pathType: Prefix
+  activeService: true
+  hosts:
+    - host: arch.homework
+      paths: []
